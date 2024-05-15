@@ -1,10 +1,20 @@
 package com.example.apihotel.controllers;
 
+import java.util.List;
+import java.util.ArrayList;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ControllerHotel {
+
+    private List<QuartoHotel> quartos = new ArrayList<>();
 
     private final String JSON_QUARTOS = "{\n" +
             "  \"quartos\": [\n" +
@@ -47,4 +57,43 @@ public class ControllerHotel {
     public String getQuartos() {
         return JSON_QUARTOS;
     }
+
+    @PutMapping("/api/hotel/quartos/{id}")
+    public String updateQuarto( @PathVariable int id, @RequestBody QuartoHotel quartoAtualizado) {
+        for (QuartoHotel quarto : quartos) {
+            if (quarto.getId() == id) {
+                quarto.setTipo(quartoAtualizado.getTipo());
+                quarto.setPreco(quartoAtualizado.getPreco());
+                quarto.setOcupacaoMaxima(quartoAtualizado.getOcupacaoMaxima());
+                quarto.setDescricao(quartoAtualizado.getDescricao());
+                quarto.setNumero(quartoAtualizado.getNumero());
+                return "Quarto atualizado com sucesso";
+        }
+    }
+
+    return "Quarto não encontrado";
 }
+
+    @PostMapping("/api/hotel/quartos")
+    public String addQuarto(@RequestBody QuartoHotel novoQuarto){
+        novoQuarto.setId(quartos.size() + 1);
+        quartos.add(novoQuarto);
+        return "Quarto adicionado com sucesso";
+
+    }
+
+    @DeleteMapping("/api/hotel/quartos/{id}") 
+    public String deleteQuarto(@PathVariable int id) {
+        for(QuartoHotel quarto : quartos) {
+            if (quarto.getId() == id) {
+                quartos.remove(quarto);
+                return "Quarto excluido com sucesso";
+            }
+        }
+
+        return "Quarto não encontrado";
+    }
+
+}
+
+
